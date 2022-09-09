@@ -1,43 +1,46 @@
 import "../css/App.css";
 import ListContacts from "./ListContacts";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import React from "react";
+import * as ContactsApi from "../utils/ContactsAPI"
+import CreateContact from "./CreateContact";
+import { Routes, Route, useNavigate } from "react-router-dom";
 
 const App = () => {
 
-  function deleteContact(contact){
-  setContacts( contacts.filter(c => c.id !== contact.id))
+  let navigate = useNavigate();
+
+  function deleteContact(contact) {
+    setContacts(contacts.filter(c => c.id !== contact.id))
   }
 
-  const [contacts, setContacts] = useState(
-    [
-      {
-        id: "karen",
-        name: "Karen Isgrigg",
-        handle: "karen_isgrigg",
-        avatarURL: "http://localhost:5001/karen.jpg",
-      },
-      {
-        id: "richard",
-        name: "Richard Kalehoff",
-        handle: "richardkalehoff",
-        avatarURL: "http://localhost:5001/richard.jpg",
-      },
-      {
-        id: "tyler",
-        name: "Tyler McGinnis",
-        handle: "tylermcginnis",
-        avatarURL: "http://localhost:5001/tyler.jpg",
-      },
-    ]
-  )
+  const createContact = (contact) => {
+    const create = async () => {
+      const res = await ContactsApi.create(contact)
+      setContacts(contacts.concat(res))
+    }
+    create();
+    navigate("/");
+  }
 
+  const [contacts, setContacts] = useState([])
 
+  useEffect(() => {
+    const getContacts = async () => {
+      const res = await ContactsApi.getAll()
+      setContacts(res)
+    }
+
+    getContacts()
+  }, [])
 
   return (
-    <div>
-      <ListContacts contacts={contacts} onDeleteContact = {deleteContact}/>
-    </div>
+    <Routes>
+      <Route exact path="/" element={
+        <ListContacts contacts={contacts} onDeleteContact={deleteContact} />
+      } />
+      <Route path="/create" element={<CreateContact onCreateContact={(contact) => createContact(contact)} />} />
+    </Routes>
   )
 };
 

@@ -1,8 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types"
 import { useState } from "react";
+import {Link } from "react-router-dom"
 
-const ListContacts = ({ contacts, onDeleteContact }) => {
+const ListContacts = ({ contacts, onDeleteContact  }) => {
 
     const [query, setQuery] = useState('')
 
@@ -26,6 +27,9 @@ const ListContacts = ({ contacts, onDeleteContact }) => {
                     placeholder="Search Contacts"
                     value={query}
                     onChange={(e) => updateQuery(e.target.value)} />
+                    <Link to = "/create"  className="add-contact"> 
+                        Add contact
+                        </Link>
             </div>
 
             {
@@ -39,10 +43,9 @@ const ListContacts = ({ contacts, onDeleteContact }) => {
                 )
             }
             <ol className="contact-list">
-                {console.log(query)}
-                {showingContacts.map(contact =>
+                {showingContacts.map((contact, i) =>
 
-                    <li key={contact.id} className="contact-list-item">
+                    <li key={i} className="contact-list-item">
                         <div
                             className="contact-avatar"
                             style={{
@@ -70,4 +73,3 @@ export default ListContacts
 
 
 
-  
